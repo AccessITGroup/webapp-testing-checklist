@@ -4,10 +4,12 @@ A Claude Code skill that structures an **authorized** web application penetratio
 **OWASP Web Security Testing Guide (WSTG)** methodology — tracks checklist coverage across all 12
 WSTG categories and turns tester-supplied evidence into a findings report with WSTG-numbered IDs.
 
-> **This is a checklist and report-generation aid for a human-led engagement. It does not send
-> requests to any target, run any scanner, or perform testing itself.** The tester runs their own
-> tooling (Burp Suite, ZAP, curl, browser devtools, etc.); this skill organizes coverage, asks the
-> right diagnostic question per WSTG test, interprets evidence pasted in, and writes the report.
+> **This is a checklist and report-generation aid for a human-led engagement, in backseat mode.**
+> Normal benign traffic (viewing pages, following links, submitting ordinary form input) is fine;
+> it never sends a payload, injection string, exploit attempt, or runs a scanner. The tester runs
+> actual security testing with their own tooling (Burp Suite, ZAP, curl, browser devtools, etc.);
+> this skill organizes coverage, asks the right diagnostic question per WSTG test, interprets
+> evidence pasted in (including raw Burp/ZAP captures), and writes the report.
 
 ## Why WSTG, and why this exists
 

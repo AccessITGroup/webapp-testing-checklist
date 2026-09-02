@@ -1,17 +1,21 @@
 ---
 name: "webapp-testing-checklist"
-description: "Walk a web application penetration test through the OWASP Web Security Testing Guide (WSTG) methodology as a structured checklist, and produce WSTG-numbered findings. Covers all 12 WSTG categories (Information Gathering, Configuration, Identity, Authentication, Authorization, Session Management, Input Validation, Error Handling, Cryptography, Business Logic, Client-side, API). This is a checklist and report-generation aid for a human-led engagement — it does not send requests to any target, run scanners, or perform testing itself. Trigger when the user wants to plan, scope, or track a web app pentest against WSTG, wants a structured findings report with WSTG IDs, says things like \"run this through WSTG\", \"OWASP testing guide checklist\", \"pentest checklist for this app\", or is doing manual/tool-assisted testing and wants help organizing coverage and writing up results."
+description: "Walk a web application penetration test through the OWASP Web Security Testing Guide (WSTG) methodology as a structured checklist, and produce WSTG-numbered findings. Covers all 12 WSTG categories (Information Gathering, Configuration, Identity, Authentication, Authorization, Session Management, Input Validation, Error Handling, Cryptography, Business Logic, Client-side, API). This is a checklist and report-generation aid for a human-led engagement, in backseat mode — normal benign traffic (viewing pages, following links, submitting ordinary form input) is fine, but it never sends attack payloads, injection strings, exploit attempts, or runs a scanner; actual security testing is the tester's job with their own tooling (Burp, ZAP, etc.), and this skill interprets the evidence they paste back. Trigger when the user wants to plan, scope, or track a web app pentest against WSTG, wants a structured findings report with WSTG IDs, says things like \"run this through WSTG\", \"OWASP testing guide checklist\", \"pentest checklist for this app\", or is doing manual/tool-assisted testing and wants help organizing coverage and writing up results."
 ---
 
 # Webapp Testing Checklist (WSTG-aligned)
 
 Structures an authorized web application penetration test around the OWASP Web Security Testing
 Guide (WSTG) methodology, tracks checklist coverage, and turns tester-supplied evidence into a
-findings report with WSTG IDs. **This skill does not perform any testing itself** — no requests
-to any target, no scanning, no exploitation. The human tester runs their own tools (Burp Suite,
-ZAP, curl, browser devtools, etc.) within their existing authorized engagement; this skill's job
-is the checklist, the diagnostic questions per test, interpreting evidence the tester pastes in,
-and the report.
+findings report with WSTG IDs. **This skill operates in backseat mode — it never drives the
+actual security testing.** Normal, benign application traffic (viewing pages, following links,
+submitting a form with ordinary non-malicious input — the same traffic any regular user or the
+tester's own browser generates) is fine when it's useful for gathering checklist context. What it
+never does: send a payload, injection string, exploit attempt, or fuzz input, or run an automated
+scanner. The human tester runs actual security testing with their own tools (Burp Suite, ZAP,
+curl, browser devtools, etc.) within their existing authorized engagement; this skill's job is the
+checklist, the diagnostic questions per test, interpreting the evidence the tester pastes in
+(including raw Burp/ZAP request-response captures), and the report.
 
 ## Step 1 — Authorization gate (required, do not skip)
 
@@ -77,8 +81,13 @@ When the tester wants a deliverable, produce a Markdown report with:
 
 ## Guardrails
 
-- Never send a request to, scan, or attempt to exploit anything — if the tester asks you to
-  "just try it," redirect them to run it with their own tooling and paste back the result.
+- **Backseat, never driving.** Normal benign traffic — viewing a page, following a link, submitting
+  a form with ordinary non-malicious input — is fine when it helps gather checklist context or
+  confirm scope. Never send a payload, injection string, exploit attempt, fuzz input, or anything
+  designed to probe or validate a vulnerability, and never run an automated scanner. If the tester
+  asks you to "just try" something that would require a payload or attack traffic, redirect them
+  to test it with their own tooling (Burp, ZAP, etc.) and paste back the request/response evidence
+  — don't attempt it yourself, and don't judge whether something is exploitable by trying it.
 - Business logic (category 10) and parts of Authorization/Session testing require understanding
   *this specific app's* intended behavior — don't mechanically mark these "Pass" without the
   tester describing the actual workflow; flag them as needing more context if unclear.
