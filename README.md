@@ -26,8 +26,14 @@ claim of authorship on WSTG itself.
 ## Authorization requirement
 
 The skill's first step is an **authorization gate**: it will not walk the checklist until the
-tester confirms written authorization for the specific target, the named engagement/scope, and the
-testing window/rules of engagement. This isn't optional — see `SKILL.md` Step 1.
+tester confirms written authorization for the specific target, the named engagement/scope, the
+testing window/rules of engagement, and the test credentials/accounts (count and role) being used.
+This isn't optional — see `SKILL.md` Step 1.
+
+**Account creation is a separate, stricter gate.** Even though normal form submission is otherwise
+fine, the skill will not create an account in the target application unless the tester has
+confirmed the SOW explicitly authorizes test-account creation, and gives real-time go-ahead at the
+point it's needed. Default is always no — existing test credentials are the expected path.
 
 ## What it covers
 
@@ -47,6 +53,15 @@ Install as a Claude Code skill (via the `AITG-hub` marketplace, or directly):
 
 Then, within an authorized engagement, trigger it with something like *"walk this app through the
 WSTG checklist"* or *"help me track coverage and write findings against WSTG for this pentest."*
+
+For each test that needs hands-on testing, you can either paste evidence (a Burp/ZAP
+request/response, a screenshot) for the skill to assess, or just give the verdict directly
+(Pass/Fail/N/A) — either is fine, the report is explicit about which was used. When you want the
+deliverable, you'll be asked which format(s): Markdown, Word (.docx), and/or PDF.
+
+The final report notes that pairing this dynamic/checklist pass with a **Claude-based source code
+security review** is recommended when code-level review is in the SOW and source access has been
+provided by the application owner — this checklist covers dynamic/black-box testing only.
 
 ## Limitations
 

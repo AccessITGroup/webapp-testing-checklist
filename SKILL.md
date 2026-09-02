@@ -31,9 +31,18 @@ what's needed instead of proceeding — do not walk the checklist without this c
    the specific hostnames/apps/IP ranges in scope.
 3. **Testing window / rules of engagement** — any time restrictions, excluded tests (e.g. no DoS,
    no destructive testing on prod), and points of contact.
+4. **Test credentials and accounts** — ask whether the tester will provide existing test
+   credentials, how many accounts, and what access role each represents (e.g. anonymous/guest,
+   standard user, admin, multiple tenants) — this determines which role-based checks (privilege
+   escalation, IDOR, authorization bypass) can actually be covered. Also ask directly: **is
+   creating new accounts in the target application in scope?** Default to **no** unless the
+   tester confirms the SOW explicitly authorizes test-account creation — see the account-creation
+   guardrail below.
 
 Record this once at the start of the session/engagement; don't re-ask on every message within the
-same conversation.
+same conversation. Never write actual credential values (passwords, API keys, session tokens) into
+the report or restate them back into the conversation — track accounts by role/label only (e.g.
+"standard-user-1", "admin-1").
 
 ## Step 2 — Scope intake
 
@@ -55,8 +64,14 @@ For each in-scope category, load its file from `references/` (don't load all 12 
 one at a time as you reach it, to keep context focused). For each test ID in that file:
 
 1. State the test ID, title, and what it verifies (from the reference table).
-2. Ask the tester what they found — or, if they paste evidence (HTTP requests/responses, screenshots,
-   config dumps, headers), assess it against that specific test's criteria.
+2. For tests that need the tester's own hands-on testing (most tests outside Information
+   Gathering), prompt with two explicit options and let the tester pick either, per test:
+   - **Provide evidence** — paste the relevant request/response (e.g. from Burp/ZAP), and/or
+     describe or attach a screenshot; assess it against this test's criteria and record both the
+     verdict and the evidence.
+   - **Just the verdict** — tell the skill Pass/Fail/Not Applicable directly, no evidence
+     required. Record the verdict, and note evidence as "not captured in this session — tester to
+     add manually" so the report never implies evidence exists when it doesn't.
 3. Record the result: **Pass**, **Fail (finding)**, **Not Applicable** (with a one-line reason —
    e.g. "no file upload feature in this app" for WSTG-BUSL-08/09), or **Not Tested** (out of time/
    scope for this pass — note it as a coverage gap, not a pass).
@@ -68,16 +83,31 @@ Point the tester to the full WSTG page for methodology detail on any specific te
 
 ## Step 4 — Report
 
-When the tester wants a deliverable, produce a Markdown report with:
+Before generating, ask which format(s) the tester wants: **Markdown** (default), and/or **Word
+(.docx)**, and/or **PDF**. More than one is fine — generate each requested format using whatever
+document-generation capability is available in the current environment.
 
-- **Engagement summary**: target(s), dates, tester, methodology (OWASP WSTG, note this is not an
-  official OWASP-endorsed tool — see README), categories in scope.
+Produce a report with:
+
+- **Notes** (top of report, before the engagement summary):
+  - Methodology disclaimer: OWASP WSTG-aligned, this is not an official OWASP-endorsed tool (see
+    README).
+  - Recommendation: pair this dynamic/checklist pass with a **Claude-based source code security
+    review** (e.g. the `security-review` skill/capability) when code-level review is included in
+    the SOW and the application owner has provided source access — this checklist only covers
+    dynamic/black-box testing and doesn't substitute for a code-level review, and vice versa.
+- **Engagement summary**: target(s), dates, tester, methodology, categories in scope, and the test
+  accounts used this pass by role/label only (e.g. "standard-user-1", "admin-1") — never actual
+  credential values.
 - **Coverage table**: per category, count of Pass / Fail / N/A / Not Tested, so gaps are visible
   at a glance rather than buried.
 - **Findings register**, sorted by severity (Critical → Info), each entry: WSTG ID, title, severity,
   affected location, description, evidence, recommendation.
-- **Appendix**: full per-test results including Pass and N/A entries with their reasons, for audit
-  trail / due-diligence purposes.
+- **Appendix**, for audit trail / due-diligence purposes:
+  - **Not Tested** — every test marked Not Tested, with its one-line coverage-gap reason.
+  - **Pass** — every test marked Pass, with whatever evidence was provided for it (or noted as
+    "verdict only, no evidence captured" per the Step 3 options).
+  - **Not Applicable** — every N/A test with its one-line reason.
 
 ## Guardrails
 
@@ -88,6 +118,12 @@ When the tester wants a deliverable, produce a Markdown report with:
   asks you to "just try" something that would require a payload or attack traffic, redirect them
   to test it with their own tooling (Burp, ZAP, etc.) and paste back the request/response evidence
   — don't attempt it yourself, and don't judge whether something is exploitable by trying it.
+- **Never create an account in the target application on your own initiative.** Even though
+  normal form submission is otherwise fine under backseat mode, account/registration creation is
+  out of scope unless (a) the tester has confirmed the SOW explicitly authorizes test-account
+  creation, and (b) the tester gives real-time go-ahead for that specific account at the point
+  it's needed (e.g. an Identity Management registration-abuse test). Until both are true, treat it
+  as not permitted and ask the tester to supply existing test credentials instead.
 - Business logic (category 10) and parts of Authorization/Session testing require understanding
   *this specific app's* intended behavior — don't mechanically mark these "Pass" without the
   tester describing the actual workflow; flag them as needing more context if unclear.
