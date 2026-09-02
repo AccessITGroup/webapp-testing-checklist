@@ -14,8 +14,9 @@ tester's own browser generates) is fine when it's useful for gathering checklist
 never does: send a payload, injection string, exploit attempt, or fuzz input, or run an automated
 scanner. The human tester runs actual security testing with their own tools (Burp Suite, ZAP,
 curl, browser devtools, etc.) within their existing authorized engagement; this skill's job is the
-checklist, the diagnostic questions per test, interpreting the evidence the tester pastes in
-(including raw Burp/ZAP request-response captures), and the report.
+checklist, the diagnostic questions per test, interpreting the evidence the tester hands off
+(including raw Burp/ZAP request-response captures, via the evidence directory convention in Step
+3), and the report.
 
 ## Step 1 — Authorization gate (required, do not skip)
 
@@ -83,12 +84,47 @@ one at a time as you reach it, to keep context focused). For each test ID in tha
 1. State the test ID, title, and what it verifies (from the reference table).
 2. For tests that need the tester's own hands-on testing (most tests outside Information
    Gathering), prompt with two explicit options and let the tester pick either, per test:
-   - **Provide evidence** — paste the relevant request/response (e.g. from Burp/ZAP), and/or
-     describe or attach a screenshot; assess it against this test's criteria and record both the
-     verdict and the evidence.
+   - **Provide evidence** — via the evidence-directory convention below; assess it against this
+     test's criteria and record both the verdict and the evidence.
    - **Just the verdict** — tell the skill Pass/Fail/Not Applicable directly, no evidence
      required. Record the verdict, and note evidence as "not captured in this session — tester to
      add manually" so the report never implies evidence exists when it doesn't.
+
+### Evidence directory convention
+
+The first time a tester wants to provide evidence in a session, explain this convention (don't
+make them ask for it, and don't ask them to paste raw request/response text or screenshots
+directly into the conversation — a file-based handoff keeps the transcript clean and gives the
+engagement a permanent evidence archive):
+
+- Create `~/wstg-evidence/` if it doesn't already exist (a plain local directory, not inside any
+  git repo — it holds raw request/response captures and screenshots, which shouldn't be
+  version-controlled).
+- **One subdirectory per finding/test, named exactly with the WSTG test ID** — e.g.
+  `~/wstg-evidence/WSTG-INPV-02/`, `~/wstg-evidence/WSTG-AUTHZ-04/`.
+- Inside each subdirectory:
+  - **`evidence.txt`** — the raw GET/POST request **and** the raw server response, in one file,
+    clearly separated:
+    ```
+    === REQUEST ===
+    GET /engagements/2/ HTTP/1.1
+    Host: target.example:8001
+    Cookie: sessionid=...
+
+    === RESPONSE ===
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+
+    <h1><script>alert(document.cookie)</script> / ...</h1>
+    ```
+  - Any supporting **screenshot(s)**, saved directly in that same subdirectory (e.g.
+    `screenshot-01.png`, numbered if there's more than one).
+- **Evidence that isn't tied to a single request/response pair** — e.g. an nmap/Nessus/Nikto scan
+  output supporting WSTG-INFO-04 (Attack Surface Identification) or a broader recon artifact —
+  goes directly under `~/wstg-evidence/` with a descriptive filename (e.g. `nmap.txt`,
+  `nikto-scan.txt`), not inside a per-finding subdirectory, since it isn't scoped to one test ID.
+- Once a subdirectory or file is ready, the tester just needs to say the WSTG ID (or filename) —
+  read it directly from disk rather than asking them to paste the content into chat.
 3. Record the result: **Pass**, **Fail (finding)**, **Not Applicable** (with a one-line reason —
    e.g. "no file upload feature in this app" for WSTG-BUSL-08/09), or **Not Tested** (out of time/
    scope for this pass — note it as a coverage gap, not a pass).
@@ -137,8 +173,9 @@ Produce a report with:
   confirm scope. Never send a payload, injection string, exploit attempt, fuzz input, or anything
   designed to probe or validate a vulnerability, and never run an automated scanner. If the tester
   asks you to "just try" something that would require a payload or attack traffic, redirect them
-  to test it with their own tooling (Burp, ZAP, etc.) and paste back the request/response evidence
-  — don't attempt it yourself, and don't judge whether something is exploitable by trying it.
+  to test it with their own tooling (Burp, ZAP, etc.) and hand back the request/response evidence
+  via the evidence directory convention above — don't attempt it yourself, and don't judge whether
+  something is exploitable by trying it.
 - **Never create an account in the target application on your own initiative.** Even though
   normal form submission is otherwise fine under backseat mode, account/registration creation is
   out of scope unless (a) the tester has confirmed the SOW explicitly authorizes test-account
