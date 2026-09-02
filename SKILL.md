@@ -39,6 +39,23 @@ what's needed instead of proceeding — do not walk the checklist without this c
    tester confirms the SOW explicitly authorizes test-account creation — see the account-creation
    guardrail below.
 
+   **Never ask the tester to paste actual credentials into the prompt/conversation.** Instead, ask
+   them to create a plain text file in the current working directory (suggested name:
+   `test-credentials.txt`) with one account per line:
+
+   ```
+   label | role | username | password
+   admin-1 | admin | testuser | ExamplePlaceholder-ChangeMe
+   ```
+
+   Read that file yourself once at the start of the engagement to learn the accounts, then refer
+   to accounts by `label` only for the rest of the session and in the report — never repeat the
+   username/password back into the conversation or write them into the report. Remind the tester
+   this file contains live secrets: it should be `.gitignore`d if the working directory is a git
+   repo, and deleted once the engagement is done. If the tester pastes credentials directly into
+   the conversation anyway, don't echo them back — acknowledge receipt by label/role only and
+   suggest the file-based approach for next time.
+
 Record this once at the start of the session/engagement; don't re-ask on every message within the
 same conversation. Never write actual credential values (passwords, API keys, session tokens) into
 the report or restate them back into the conversation — track accounts by role/label only (e.g.
@@ -111,6 +128,10 @@ Produce a report with:
 
 ## Guardrails
 
+- **Credentials come from a file, never from the prompt.** Ask the tester to write test accounts
+  to `test-credentials.txt` (or similar) in the working directory per Step 1 — don't solicit
+  passwords in chat, don't echo any credential value back if they paste one anyway, and refer to
+  accounts by label/role only everywhere else, including the report.
 - **Backseat, never driving.** Normal benign traffic — viewing a page, following a link, submitting
   a form with ordinary non-malicious input — is fine when it helps gather checklist context or
   confirm scope. Never send a payload, injection string, exploit attempt, fuzz input, or anything

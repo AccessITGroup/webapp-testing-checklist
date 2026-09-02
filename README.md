@@ -30,6 +30,12 @@ tester confirms written authorization for the specific target, the named engagem
 testing window/rules of engagement, and the test credentials/accounts (count and role) being used.
 This isn't optional — see `SKILL.md` Step 1.
 
+**Credentials never go in the chat.** Test accounts are supplied via a plain text file
+(`test-credentials.txt` by convention) in the working directory, one account per line
+(`label | role | username | password`) — the skill reads it once, then refers to accounts by
+label/role only for the rest of the session and in the report. `.gitignore` that file and delete
+it after the engagement.
+
 **Account creation is a separate, stricter gate.** Even though normal form submission is otherwise
 fine, the skill will not create an account in the target application unless the tester has
 confirmed the SOW explicitly authorizes test-account creation, and gives real-time go-ahead at the
