@@ -125,6 +125,30 @@ engagement a permanent evidence archive):
   `nikto-scan.txt`), not inside a per-finding subdirectory, since it isn't scoped to one test ID.
 - Once a subdirectory or file is ready, the tester just needs to say the WSTG ID (or filename) —
   read it directly from disk rather than asking them to paste the content into chat.
+
+### Self-tested findings (benign traffic performed by the skill itself)
+
+Some findings get confirmed by the skill's own benign-traffic testing (Step 1's Information
+Gathering fingerprinting, header checks, forced-browsing/IDOR checks the tester explicitly
+directed, etc.) rather than tester-supplied evidence. **These still need evidence saved,
+following the exact same convention** — don't let "I already have the data in my own tool
+output" become an excuse to skip it, since that tool output isn't part of the permanent
+engagement record:
+- Write the real request(s) and response(s) actually sent/received into
+  `~/wstg-evidence/<WSTG-ID>/evidence.txt`, in the same `=== REQUEST ===` / `=== RESPONSE ===`
+  format. Reconstruct the raw HTTP form accurately from what was actually sent (headers, method,
+  body) and actually received (status, headers, relevant body excerpt) — this must reflect real
+  observed traffic, never fabricated/representative content.
+- Add a screenshot **only** when both (a) the current environment has a visual/browser-automation
+  capability (not just a CLI HTTP client), and (b) the finding is something a screenshot would
+  usefully depict (rendered XSS execution, a UI state, a visual redress issue) — most
+  header/config/logic findings don't need one. If a screenshot would help but the environment has
+  no visual capability, say so explicitly in the finding writeup rather than omitting evidence
+  silently.
+- If a finding's evidence would itself contain a live secret (e.g. the raw request for a
+  weak-password finding would require writing the actual password to disk), do not write that
+  file — record verdict-only with a note explaining evidence was withheld per the credential
+  handling rule above, same as any other credential-value protection in this skill.
 3. Record the result: **Pass**, **Fail (finding)**, **Not Applicable** (with a one-line reason —
    e.g. "no file upload feature in this app" for WSTG-BUSL-08/09), or **Not Tested** (out of time/
    scope for this pass — note it as a coverage gap, not a pass).
