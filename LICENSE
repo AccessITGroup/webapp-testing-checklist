@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-NOTE: this license covers the skill's original instructions and code
-(SKILL.md, README.md, and this file). The checklist content under
-`references/` is derived from the OWASP Web Security Testing Guide and is
-separately licensed CC BY-SA 4.0 — see LICENSE-CONTENT.md.
