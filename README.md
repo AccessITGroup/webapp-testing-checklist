@@ -93,6 +93,12 @@ provided by the application owner — this checklist covers dynamic/black-box te
   delivering it — don't assume success from the file being created. `pandoc` or `python-docx`,
   where available, have generally proven more reliable for this than OS-builtin converters.
 
+## Eval suite
+
+`evals/` holds regression tests for the safety-critical guardrails (authorization gate,
+credential handling, the boundary against ever executing real attack traffic). See
+`evals/README.md` for how to run them and what each case checks.
+
 ## Changelog
 
 See `CHANGELOG.md` for version history.

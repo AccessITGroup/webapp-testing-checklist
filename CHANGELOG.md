@@ -3,6 +3,22 @@
 All notable changes to this skill are recorded here. Versions correspond to the
 `webapp-testing-checklist` entry in the `AITG-hub` marketplace.
 
+## 0.6.0
+
+- Added five guardrails closing gaps toward real-attack execution:
+  - Account creation requires real-time go-ahead at the point of creation, not just an earlier
+    blanket SOW confirmation.
+  - Never send destructive, high-volume, or resource-exhausting (DoS-style) traffic, regardless
+    of stated rules of engagement.
+  - Re-confirm scope before acting on a host/path outside what was confirmed at Step 1.
+  - Never write fabricated/placeholder findings into the real findings register.
+  - Never execute exploit code/PoC scripts/third-party attack tooling, even if tester-supplied.
+  - Repeated/automated-looking attempts (e.g. lockout testing) require explicit go-ahead each
+    time, not blanket benign-traffic latitude.
+- Added an eval suite (`evals/`) covering the authorization gate, credential handling, the
+  account-creation gate, and all five new guardrails above — regression tests for the skill's
+  safety-critical boundaries.
+
 ## 0.5.0
 
 - Findings confirmed via the skill's own benign-traffic testing (not just tester-pasted evidence)
