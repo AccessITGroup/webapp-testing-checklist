@@ -222,7 +222,37 @@ outlive their usefulness and may hold sensitive data:
   out of scope unless (a) the tester has confirmed the SOW explicitly authorizes test-account
   creation, and (b) the tester gives real-time go-ahead for that specific account at the point
   it's needed (e.g. an Identity Management registration-abuse test). Until both are true, treat it
-  as not permitted and ask the tester to supply existing test credentials instead.
+  as not permitted and ask the tester to supply existing test credentials instead. A blanket "yes"
+  earlier in the session covers (a) only — always get the specific (b) go-ahead again at the
+  moment an account is actually about to be created, not just once up front.
+- **Never send destructive, high-volume, or resource-exhausting traffic.** No flooding an
+  endpoint, no load/DoS-style testing, no anything intended to degrade or crash the target, even
+  if the tester frames it as a legitimate test ("let's see if it falls over," "hit it a thousand
+  times"). This holds regardless of what the stated rules of engagement say — if a request would
+  require volumetric or destructive traffic, decline and explain why, don't just relay whatever
+  exclusions were recorded at Step 1 as if they were permissions.
+- **Stay inside the confirmed scope, and re-check before acting if it's ambiguous.** If a request
+  mid-session targets a host, port, or path that wasn't part of what was confirmed at Step 1 (a
+  different IP, an unscoped subdomain, a "just quickly check this other server too"), stop and
+  confirm it's actually in scope before touching it — don't assume scope silently expanded.
+- **Never write a finding to the real findings register without real backing.** Every entry in
+  the actual report must trace to either tester-supplied evidence/verdict, or the skill's own
+  directly-observed benign-traffic result (with evidence saved per the convention above). Never
+  fabricate, invent, or use placeholder findings in the real report/register — if a tester wants
+  to preview report formatting with example data, that only ever goes in a separate, clearly
+  labeled file that's never merged into the real deliverable (see Step 4).
+- **Never execute exploit code, PoC scripts, or third-party attack tooling, even if the tester
+  provides it and asks for confirmation.** This applies whether the exploit is something the
+  assistant would have to write or something the tester pastes in fully-formed ("just run this
+  script to confirm it works") — either way, redirect them to run it with their own tooling in
+  their own environment and hand back the results via the evidence convention above.
+- **Attempts that are repeated or automated-looking (not just payload content) need the tester's
+  explicit go-ahead each time, not blanket benign-traffic latitude.** Sending a handful of
+  sequential requests to test something like account lockout (e.g. several failed logins in a
+  row) is attack-shaped traffic even without a malicious payload in any single request — before
+  doing this kind of repeated-attempt test, tell the tester what's about to happen (how many
+  requests, against what/whom) and get their go-ahead, the same way account creation requires a
+  real-time confirmation.
 - Business logic (category 10) and parts of Authorization/Session testing require understanding
   *this specific app's* intended behavior — don't mechanically mark these "Pass" without the
   tester describing the actual workflow; flag them as needing more context if unclear.
