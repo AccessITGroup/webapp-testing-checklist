@@ -41,6 +41,13 @@ fine, the skill will not create an account in the target application unless the 
 confirmed the SOW explicitly authorizes test-account creation, and gives real-time go-ahead at the
 point it's needed. Default is always no — existing test credentials are the expected path.
 
+**This gate is conversational, not technical.** The authorization check is a prompt the assistant
+follows, not a mechanism that can independently verify anything — it relies on the tester
+answering honestly. Nothing here stops a user from misrepresenting their authorization, and
+nothing stops someone from forking this repo and stripping the guardrails out entirely. Treat this
+skill as a workflow aid for testers who are already authorized, not as a safeguard that makes
+unauthorized use impossible.
+
 ## What it covers
 
 All 12 WSTG categories — Information Gathering, Configuration & Deployment, Identity Management,
@@ -78,6 +85,17 @@ provided by the application owner — this checklist covers dynamic/black-box te
   understanding of the specific application's intended behavior — this skill prompts for that
   context, it doesn't substitute for it.
 - Not an official OWASP project; not endorsed by the OWASP Foundation.
+- **Word (`.docx`) output reliability varies by local toolchain.** Text and tables convert fine,
+  but embedding local screenshot images into `.docx` has proven unreliable with some common
+  local HTML→DOCX conversion tools (e.g. macOS `textutil` dropped images entirely in testing,
+  while the same source converted to PDF embedded them correctly). If a report includes
+  screenshots, **open the generated `.docx` and verify the images actually appear** before
+  delivering it — don't assume success from the file being created. `pandoc` or `python-docx`,
+  where available, have generally proven more reliable for this than OS-builtin converters.
+
+## Changelog
+
+See `CHANGELOG.md` for version history.
 
 ## License
 
