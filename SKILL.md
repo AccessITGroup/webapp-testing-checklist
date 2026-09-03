@@ -100,8 +100,14 @@ engagement a permanent evidence archive):
 - Create `~/wstg-evidence/` if it doesn't already exist (a plain local directory, not inside any
   git repo — it holds raw request/response captures and screenshots, which shouldn't be
   version-controlled).
-- **One subdirectory per finding/test, named exactly with the WSTG test ID** — e.g.
-  `~/wstg-evidence/WSTG-INPV-02/`, `~/wstg-evidence/WSTG-AUTHZ-04/`.
+- **Split into `fail-evidence/` and `pass-evidence/` subdirectories** at the top level, so a
+  reviewer can immediately tell which folder holds findings vs. which holds supporting evidence
+  for tests that passed — e.g. `~/wstg-evidence/fail-evidence/WSTG-AUTHZ-04/`,
+  `~/wstg-evidence/pass-evidence/WSTG-SESS-06/`. Not Applicable and Not Tested results don't get
+  an evidence folder (there's nothing to capture) — their one-line reasons live in the report
+  appendix only.
+- **Within `fail-evidence/` or `pass-evidence/`, one subdirectory per test, named exactly with the
+  WSTG test ID** — e.g. `fail-evidence/WSTG-INPV-02/`, `pass-evidence/WSTG-SESS-06/`.
 - Inside each subdirectory:
   - **`evidence.txt`** — the raw GET/POST request **and** the raw server response, in one file,
     clearly separated:
@@ -120,9 +126,12 @@ engagement a permanent evidence archive):
   - Any supporting **screenshot(s)**, saved directly in that same subdirectory (e.g.
     `screenshot-01.png`, numbered if there's more than one).
 - **Evidence that isn't tied to a single request/response pair** — e.g. an nmap/Nessus/Nikto scan
-  output supporting WSTG-INFO-04 (Attack Surface Identification) or a broader recon artifact —
-  goes directly under `~/wstg-evidence/` with a descriptive filename (e.g. `nmap.txt`,
-  `nikto-scan.txt`), not inside a per-finding subdirectory, since it isn't scoped to one test ID.
+  output. If it backs one specific test with a verdict (e.g. an nmap scan supporting
+  WSTG-INFO-04), describe/reference it inside that test's `fail-evidence/<ID>/` or
+  `pass-evidence/<ID>/` folder like any other evidence. If it's a broader recon artifact that
+  doesn't map to a single test ID, it goes directly under `~/wstg-evidence/` (above the
+  `fail-evidence`/`pass-evidence` split) with a descriptive filename (e.g. `nmap.txt`,
+  `nikto-scan.txt`).
 - Once a subdirectory or file is ready, the tester just needs to say the WSTG ID (or filename) —
   read it directly from disk rather than asking them to paste the content into chat.
 
@@ -135,10 +144,12 @@ following the exact same convention** — don't let "I already have the data in 
 output" become an excuse to skip it, since that tool output isn't part of the permanent
 engagement record:
 - Write the real request(s) and response(s) actually sent/received into
-  `~/wstg-evidence/<WSTG-ID>/evidence.txt`, in the same `=== REQUEST ===` / `=== RESPONSE ===`
-  format. Reconstruct the raw HTTP form accurately from what was actually sent (headers, method,
-  body) and actually received (status, headers, relevant body excerpt) — this must reflect real
-  observed traffic, never fabricated/representative content.
+  `~/wstg-evidence/fail-evidence/<WSTG-ID>/evidence.txt` or
+  `~/wstg-evidence/pass-evidence/<WSTG-ID>/evidence.txt` (whichever matches the verdict), in the
+  same `=== REQUEST ===` / `=== RESPONSE ===` format. Reconstruct the raw HTTP form accurately
+  from what was actually sent (headers, method, body) and actually received (status, headers,
+  relevant body excerpt) — this must reflect real observed traffic, never
+  fabricated/representative content.
 - Add a screenshot **only** when both (a) the current environment has a visual/browser-automation
   capability (not just a CLI HTTP client), and (b) the finding is something a screenshot would
   usefully depict (rendered XSS execution, a UI state, a visual redress issue) — most
@@ -179,11 +190,13 @@ Produce a report with:
 - **Coverage table**: per category, count of Pass / Fail / N/A / Not Tested, so gaps are visible
   at a glance rather than buried.
 - **Findings register**, sorted by severity (Critical → Info), each entry: WSTG ID, title, severity,
-  affected location, description, evidence, recommendation.
+  affected location, description, evidence, recommendation. Note near the top of this section that
+  full evidence for each entry lives at `~/wstg-evidence/fail-evidence/<WSTG-ID>/evidence.txt`.
 - **Appendix**, for audit trail / due-diligence purposes:
   - **Not Tested** — every test marked Not Tested, with its one-line coverage-gap reason.
-  - **Pass** — every test marked Pass, with whatever evidence was provided for it (or noted as
-    "verdict only, no evidence captured" per the Step 3 options).
+  - **Pass** — every test marked Pass, with a one-line evidence summary in the table and a note
+    that full evidence lives at `~/wstg-evidence/pass-evidence/<WSTG-ID>/evidence.txt` (or
+    "verdict only, no evidence captured" per the Step 3 options, when nothing was saved).
   - **Not Applicable** — every N/A test with its one-line reason.
 
 Once the report is delivered and accepted, remind the tester to clean up local artifacts that

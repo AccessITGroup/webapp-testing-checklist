@@ -3,6 +3,12 @@
 All notable changes to this skill are recorded here. Versions correspond to the
 `webapp-testing-checklist` entry in the `AITG-hub` marketplace.
 
+## 0.7.0
+
+- Split the evidence directory into `~/wstg-evidence/fail-evidence/<WSTG-ID>/` and
+  `~/wstg-evidence/pass-evidence/<WSTG-ID>/` so findings and passing-test evidence are never
+  mixed in the same folder. Report generation now cites both paths explicitly.
+
 ## 0.6.0
 
 - Added five guardrails closing gaps toward real-attack execution:
